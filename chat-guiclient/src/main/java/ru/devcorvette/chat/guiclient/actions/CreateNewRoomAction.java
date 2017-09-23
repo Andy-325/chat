@@ -6,18 +6,27 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 
 /**
- * Проверяет статус подключения к серверу
- * и вызывает у клиента метод createNewRoom
+ * Класс - слушатель событий. Создает новый чат рум.
  */
 class CreateNewRoomAction extends AbstractAction {
     private final String name;
     private final Client client;
 
+    /**
+     * @param client клиент
+     * @param name   название действия
+     */
     CreateNewRoomAction(Client client, String name) {
         this.client = client;
         this.name = name;
     }
 
+    /**
+     * Проверяет статус подключения к серверу
+     * и вызывает у клиента метод createNewRoom.
+     *
+     * @param e е
+     */
     @Override
     public void actionPerformed(ActionEvent e) {
         if (!client.isClientConnected()) {
@@ -28,6 +37,9 @@ class CreateNewRoomAction extends AbstractAction {
         client.createNewRoom();
     }
 
+    /**
+     * @return название действия
+     */
     @Override
     public String toString() {
         return name;

@@ -7,19 +7,28 @@ import java.awt.event.ActionEvent;
 import java.util.Map;
 
 /**
- * Получает у ActionsFactory список горячих клавишь и
- * выводит его информационным сообщением через ChatFrame
+ * Класс - слушатель событий. Вызывает справку о горячих клавишах.
  */
 class ShowKeyMap extends AbstractAction {
     private final String name;
     private final ChatFrame frame;
     private final StringBuilder builder = new StringBuilder();
 
+    /**
+     * @param frame окно чата
+     * @param name название действия
+     */
     ShowKeyMap(ChatFrame frame, String name) {
         this.frame = frame;
         this.name = name;
     }
 
+    /**
+     * Получает у ActionsFactory список горячих клавишь и
+     * выводит его информационным сообщением через ChatFrame.
+     *
+     * @param e е
+     */
     @Override
     public void actionPerformed(ActionEvent e) {
         builder.delete(0, builder.length());
@@ -35,6 +44,9 @@ class ShowKeyMap extends AbstractAction {
         frame.showInformMessage(builder.toString());
     }
 
+    /**
+     * @return название действия
+     */
     @Override
     public String toString() {
         return name;

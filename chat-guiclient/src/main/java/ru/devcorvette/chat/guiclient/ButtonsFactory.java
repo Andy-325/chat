@@ -9,9 +9,10 @@ import ru.devcorvette.chat.core.Client;
 import javax.swing.*;
 
 /**
- * Создает кнопки, задает свойства, назначает слушателей.
+ * Статический класс создает кнопки главного окна,
+ * задает их свойства, назначает слушателей.
  */
-public class ButtonsFactory {
+public final class ButtonsFactory {
     private static JButton connectButton;
     private static JButton settingsButton;
     private static JButton sendButton;
@@ -25,7 +26,12 @@ public class ButtonsFactory {
 
     /**
      * Задает свойства и добавляет слушателя к кнопке
-     * подлючиться
+     * подлючиться.
+     *
+     *
+     * @param frame главное окно чата
+     * @param client клиент
+     * @return кнопка подключиться
      */
     public static JButton initConnectButton(ChatFrame frame, Client client) {
         connectButton = new JButton();
@@ -39,7 +45,10 @@ public class ButtonsFactory {
 
     /**
      * Задает свойства и добавляет слушателя к кнопке
-     * вызова меню настроек
+     * вызова меню настроек.
+     *
+     * @param dialog окно настроек
+     * @return кнопка вызова окна насроек
      */
     public static JButton initSettingsButton(JDialog dialog) {
         settingsButton = new JButton();
@@ -53,7 +62,10 @@ public class ButtonsFactory {
 
     /**
      * Задает свойства и добавляет слушателя к кнопке
-     * отправки сообщений
+     * отправки сообщений.
+     *
+     * @param client клиент
+     * @return кнопка отправить сообщение
      */
     public static JButton initSendButton(GUIClient client) {
         sendButton = new JButton();
@@ -67,7 +79,10 @@ public class ButtonsFactory {
 
     /**
      * Задает свойства и добавляет слушателя к кнопке
-     * вызова смайликов
+     * вызова смайликов.
+     *
+     * @param menu меню смайликов
+     * @return кнопка вызова меню смайликов.
      */
     public static JButton initSmilesButton(JPopupMenu menu) {
         smilesButton = new JButton();
@@ -81,7 +96,10 @@ public class ButtonsFactory {
 
     /**
      * Задает свойства и добавляет слушателя к кнопке
-     * создания нового чат рума
+     * создания нового чат рума.
+     *
+     * @param client клиент
+     * @return кнопка создания нового чат рум
      */
     public static JButton initCreateNewRoomButton(Client client) {
         createNewRoomButton = new JButton();
@@ -95,9 +113,12 @@ public class ButtonsFactory {
 
     /**
      * Задает свойства и добавляет слушателя к кнопке
-     * закрыть окно настроек сохранить изменения
+     * закрыть окно настроек сохранить изменения.
+     *
+     * @param settingsPane окно настроек
+     * @return кнопка ОК окна настроек
      */
-    public static JButton initOkSettingsButton(final SettingsPane settingsPane) {
+    public static JButton initOkSettingsButton(SettingsPane settingsPane) {
         okSettingsButton = new JButton();
         okSettingsButton.setText("ОК");
 
@@ -108,7 +129,10 @@ public class ButtonsFactory {
 
     /**
      * Задает свойства и добавляет слушателя к кнопке
-     * закрыть окно настроек без сохранения изменений
+     * закрыть окно настроек без сохранения изменений.
+     *
+     * @param settingsPane окно настроек
+     * @return кнопка Отмена окна настроек
      */
     public static JButton initCancelSettingsButton(final SettingsPane settingsPane) {
         cancelSettingsButton = new JButton();
@@ -119,30 +143,51 @@ public class ButtonsFactory {
         return cancelSettingsButton;
     }
 
+    /**
+     * @return кнопка подключиться
+     */
     public static JButton getConnectButton() {
         return connectButton;
     }
 
+    /**
+     * @return кнопка вызова окна настроек
+     */
     public static JButton getSettingsButton() {
         return settingsButton;
     }
 
+    /**
+     * @return кнопка отправить сообщение
+     */
     public static JButton getSendButton() {
         return sendButton;
     }
 
+    /**
+     * @return кнопка вызова меню смайликов
+     */
     public static JButton getSmilesButton() {
         return smilesButton;
     }
 
+    /**
+     * @return кнопка создать новый чат рум
+     */
     public static JButton getCreateNewRoomButton() {
         return createNewRoomButton;
     }
 
+    /**
+     * @return кнопка ОК окна настроек
+     */
     public static JButton getOkSettingsButton() {
         return okSettingsButton;
     }
 
+    /**
+     * @return кнопка Отмена окна настроек
+     */
     public static JButton getCancelSettingsButton() {
         return cancelSettingsButton;
     }

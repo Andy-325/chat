@@ -16,7 +16,7 @@ import java.util.Date;
  * Выводит сообшения во вкладки.
  * Создает вкладки приватного чата если необходимо.
  */
-public class PrintManager {
+class PrintManager {
     private static final Logger log = Logger.getLogger(PrintManager.class);
 
     private final SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
@@ -26,16 +26,25 @@ public class PrintManager {
 
     private final TabManager tabManager;
 
-    public PrintManager(TabManager tabManager) {
+    /**
+     * @param tabManager tabManager
+     */
+    PrintManager(TabManager tabManager) {
         this.tabManager = tabManager;
     }
 
     /**
      * Определяет стиль сообщения. Определяет вкладку в которую будет выводить сообщение.
      * Не выводит сообщение если вкладка отсутсвует в tabManager.
-     * Выводит сообщение в JTextPane вкладки и ставит +1 непрочитанное сообщение
+     * Выводит сообщение в JTextPane вкладки и ставит +1 непрочитанное сообщение.
+     *
+     * @param text      текст сообщения
+     * @param recipient получатель
+     * @param sender    отправитель
+     * @param ownName   собственное имя
+     * @return true если сообщение напечатано
      */
-    public boolean print(String text, String recipient, String sender, String ownName) {
+    boolean print(String text, String recipient, String sender, String ownName) {
         Style style = getStyle(sender, ownName);
 
         Tab tab = getTab(recipient, sender, ownName);
@@ -57,9 +66,13 @@ public class PrintManager {
     }
 
     /**
-     * Определяет стиль текста сообщения в зависимости от отправителя
+     * Определяет стиль текста сообщения в зависимости от отправителя.
+     *
+     * @param sender  отправитель
+     * @param ownName собственное имя
+     * @return стиль текста
      */
-    public Style getStyle(String sender, String ownName) {
+    Style getStyle(String sender, String ownName) {
         //информационное сообщение
         if (sender == null) {
             return fontStyle.BOLD_RED;
@@ -77,11 +90,16 @@ public class PrintManager {
     /**
      * Возвращает вкладку приватного чата или создает её если нету.
      * <p>
-     * Возвращает вкладку чат рума, если она есть в tabManager
+     * Возвращает вкладку чат рума, если она есть в tabManager.
      * <p>
-     * Возвращает null, если вкладки чат рума нет в tabManager
+     * Возвращает null, если вкладки чат рума нет в tabManager.
+     *
+     * @param recipient получатель
+     * @param sender    отправитель
+     * @param ownName   собсвенное имя
+     * @return вкладка
      */
-    public Tab getTab(String recipient, String sender, String ownName) {
+    Tab getTab(String recipient, String sender, String ownName) {
         Tab tab;
         if (recipient.equals(ownName)) {
             tab = tabManager.getTabAtTitle(sender);
@@ -95,7 +113,11 @@ public class PrintManager {
     }
 
     /**
-     * Форматирует сообщение - добавляет дату и отправителя
+     * Форматирует сообщение - добавляет дату и отправителя.
+     *
+     * @param text   текст сообщения
+     * @param sender отправитель
+     * @return форматированный текст
      */
     private String formattingTextMessage(String text, String sender) {
         String time = timeFormat.format(new Date());
@@ -108,7 +130,12 @@ public class PrintManager {
 
     /**
      * Вспомогательный метод для вывода сообщений в поле messages
-     * с учетом разных стилей, и с автопрокруткой
+     * с учетом разных стилей, и с автопрокруткой.
+     *
+     * @param messages текстовое поле
+     * @param text     текст сообщения
+     * @param style    стиль текста
+     * @throws BadLocationException если слуичается ошибка в документе
      */
     private void outputMessageInMessageField(JTextPane messages,
                                              String text,
@@ -127,7 +154,11 @@ public class PrintManager {
 
     /**
      * Вспомогательный метод, который ищет в строке смайлик, если находит
-     * то выводит в окно message иконку смайлика и возвращает true
+     * то выводит в окно message иконку смайлика и возвращает true.
+     *
+     * @param pane текстовое поле
+     * @param line строка
+     * @return true если вставил в поле смайлик
      */
     private boolean insertSmile(JTextPane pane, String line) {
         for (Style smile : smiles) {

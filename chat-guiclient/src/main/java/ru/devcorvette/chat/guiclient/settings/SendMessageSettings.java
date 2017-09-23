@@ -15,12 +15,15 @@ class SendMessageSettings implements Settings {
     private final ButtonGroup buttonGroup = getButtonGroup();
     private boolean isEnter = true;       //контроль изменений кнопки ентер
 
-    public SendMessageSettings(JComponent entryField) {
+    /**
+     * @param entryField поле ввода
+     */
+    SendMessageSettings(JComponent entryField) {
         this.entryField = entryField;
     }
 
     /**
-     * Узнает через ActionsFactory каким сочетанием клавишь отправляется сообщение
+     * Узнает через ActionsFactory каким сочетанием клавишь отправляется сообщение.
      */
     @Override
     public void load() {
@@ -51,6 +54,9 @@ class SendMessageSettings implements Settings {
         }
     }
 
+    /**
+     * @return ButtonGroup
+     */
     private ButtonGroup getButtonGroup() {
         ButtonGroup group = new ButtonGroup();
         group.add(enterButton);
@@ -59,10 +65,16 @@ class SendMessageSettings implements Settings {
         return group;
     }
 
+    /**
+     * @return enterButton
+     */
     public JRadioButton getEnterButton() {
         return enterButton;
     }
 
+    /**
+     * @return shiftEnterButton
+     */
     public JRadioButton getShiftEnterButton() {
         return shiftEnterButton;
     }

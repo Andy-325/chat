@@ -124,7 +124,7 @@ public class Smiles {
     }
 
     /**
-     * Класс для получения экземпляра Smiles
+     * Класс для потокобезопасного создания экземпляра класса.
      */
     private static class SingletonHelper {
         private static final Smiles INSTANCE = new Smiles();

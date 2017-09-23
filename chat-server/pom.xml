@@ -32,7 +32,7 @@
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib/</classpathPrefix>
                             <classpathLayoutType>simple</classpathLayoutType>
-                            <mainClass>ru.devcorvette.chat.server.DateBot</mainClass>
+                            <mainClass>ru.devcorvette.chat.server.Main</mainClass>
                         </manifest>
                         <manifestEntries>
                             <Class-Path>.</Class-Path>
@@ -55,7 +55,7 @@
                             <outputDirectory>${project.build.directory}</outputDirectory>
                             <resources>
                                 <resource>
-                                    <directory>${basedir}</directory>
+                                    <directory>${project.basedir}</directory>
                                     <include>config.properties</include>
                                 </resource>
                             </resources>

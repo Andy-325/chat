@@ -8,7 +8,7 @@ import javax.swing.*;
  * Настройки подключения.
  * Содержит лейблы и текстовые поля для отображения настроек подключения.
  * <p>
- * Загружает и изменяет адрес и порт сервера
+ * Загружает и изменяет адрес и порт сервера.
  */
 class ConnectSettings implements Settings {
     private final JLabel addressLabel = new JLabel("Адрес сервера");
@@ -21,7 +21,7 @@ class ConnectSettings implements Settings {
     private String port;    //контроль изменений порта
 
     /**
-     * Загружает адрес и порт сервера из файла через ResourceManager
+     * Загружает адрес и порт сервера из файла через ResourceManager.
      */
     @Override
     public void load() {
@@ -33,7 +33,7 @@ class ConnectSettings implements Settings {
     }
 
     /**
-     * Если данные изменились, сохраняет их в файл через ResourceManager
+     * Если данные изменились, сохраняет их в файл через ResourceManager.
      */
     @Override
     public void save() {
@@ -46,18 +46,30 @@ class ConnectSettings implements Settings {
         }
     }
 
+    /**
+     * @return addressLabel
+     */
     JLabel getAddressLabel() {
         return addressLabel;
     }
 
+    /**
+     * @return portLabel
+     */
     JLabel getPortLabel() {
         return portLabel;
     }
 
+    /**
+     * @return  addressText
+     */
     JTextField getAddressText() {
         return addressText;
     }
 
+    /**
+     * @return portText
+     */
     JTextField getPortText() {
         return portText;
     }

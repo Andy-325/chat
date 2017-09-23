@@ -4,8 +4,8 @@ import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 /**
- * Узел для пользователя
- * Открывает приватный чат
+ * Узел для пользователя.
+ * Открывает приватный чат.
  */
 public class UserNode extends ChatNode {
     public UserNode(UsersTree usersTree,
@@ -14,19 +14,22 @@ public class UserNode extends ChatNode {
         super(usersTree, parent, userName);
     }
 
+    /**
+     * @return меню приватного чата
+     */
     @Override
     protected JPopupMenu addMenu() {
         return MenuFactory.getUserMenu();
     }
 
     /**
-     * Открывает приватный чат
+     * Открывает приватный чат.
      */
     @Override
     public void openChat() {
-        if (name.equals(usersTree.getOwnName())) {
+        if (getName().equals(getUsersTree().getOwnName())) {
             //должено быть открытие приватного чата
-            usersTree.openPrivateRoom(name);
+            getUsersTree().openPrivateRoom(getName());
         }
     }
 }

@@ -7,18 +7,27 @@ import javax.swing.event.ChangeListener;
 import java.awt.*;
 
 /**
- * При выделении вкладки очищается список не прочитанных сообщений
- * и разворачивается ветка пользователей в UsersTree
+ * Слушает состояния вкладок.
  */
 public class ChangeTabAction implements ChangeListener {
     private final TabManager tabManager;
     private final ChatFrame frame;
 
-    public ChangeTabAction(TabManager tabManager, ChatFrame frame) {
+    /**
+     * @param tabManager tabManager
+     * @param frame      окно чата
+     */
+    ChangeTabAction(TabManager tabManager, ChatFrame frame) {
         this.frame = frame;
         this.tabManager = tabManager;
     }
 
+    /**
+     * При выделении вкладки очищается список не прочитанных сообщений
+     * и разворачивается ветка пользователей в UsersTree.
+     *
+     * @param e е
+     */
     @Override
     public void stateChanged(ChangeEvent e) {
         Tab tab = null;

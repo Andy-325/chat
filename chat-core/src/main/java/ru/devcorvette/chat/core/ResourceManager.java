@@ -120,8 +120,6 @@ public class ResourceManager {
         ImageIcon icon;
 
         if (url == null) {
-            if (log.isDebugEnabled())
-                log.debug(fileName + " is not found.");
             icon = new ImageIcon();
         } else icon = new ImageIcon(url);
 

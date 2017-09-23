@@ -1,7 +1,7 @@
 package ru.devcorvette.chat.guiclient.users;
 
-import ru.devcorvette.chat.core.ResourceManager;
 import ru.devcorvette.chat.core.Client;
+import ru.devcorvette.chat.core.ResourceManager;
 import ru.devcorvette.chat.guiclient.messages.TabManager;
 
 import javax.swing.*;
@@ -22,7 +22,7 @@ import java.util.*;
  * Разворачивает/Сворачивает ветви и запоминает какие
  * развернул/свернул пользователь.
  * <p>
- * Взаимодействует с вкладками TabManager
+ * Взаимодействует с вкладками TabManager.
  */
 public class UsersTree extends JTree {
     private final Map<String, RoomNode> roomsMap = new HashMap<>();
@@ -37,6 +37,12 @@ public class UsersTree extends JTree {
 
     private String activeNode;
 
+    /**
+     * Создает UsersTree, model, root node.
+     *
+     * @param client клиент
+     * @param tabManager tabManager
+     */
     public UsersTree(Client client, TabManager tabManager) {
         this.client = client;
         this.tabManager = tabManager;
@@ -75,7 +81,10 @@ public class UsersTree extends JTree {
 
     /**
      * Добавляет или обновляет чат рум со списком пользователей
-     * Обновляет отображение UsersTree и разварачивает узлы которые были развернуты ранее
+     * Обновляет отображение UsersTree и разварачивает узлы которые были развернуты ранее.
+     *
+     * @param usersArray массив имен пользователей
+     * @param roomName имя чат рум
      */
     public synchronized void changeRoom(String[] usersArray, String roomName) {
         //создание нового чат рум
@@ -103,7 +112,7 @@ public class UsersTree extends JTree {
     }
 
     /**
-     * Очищает дерево пользователей
+     * Очищает дерево пользователей.
      */
     public synchronized void cleanUsersThree() {
         root.removeAllChildren();
@@ -112,7 +121,9 @@ public class UsersTree extends JTree {
     }
 
     /**
-     * Разворачивает ветку чат рума
+     * Разворачивает ветку чат рума.
+     *
+     * @param roomName имя чат рума
      */
     public synchronized void expandRoom(String roomName) {
         if (!roomsMap.containsKey(roomName)) return;
@@ -121,44 +132,75 @@ public class UsersTree extends JTree {
     }
 
     /**
-     * Открывает приватный чат через TabManager
+     * Открывает приватный чат через TabManager.
+     *
+     * @param roomName имя чат рум
      */
     public void openPrivateRoom(String roomName) {
         tabManager.addMessagesTab(roomName, TabManager.PRIVATE_TAB, true);
     }
 
+    /**
+     * @return корневой узел дерева
+     */
     public DefaultMutableTreeNode getRoot() {
         return root;
     }
 
-    public String getOwnName() {
+    /**
+     * @return имя пользователя
+     */
+    String getOwnName() {
         return client.getOwnName();
     }
 
-    public String getMainRoomName() {
+    /**
+     * @return имя главного чата
+     */
+    String getMainRoomName() {
         return client.getMainRoomName();
     }
 
-    public void connectToRoom(String roomName) {
+    /**
+     * Запрос на подключение к чату.
+     *
+     * @param roomName имя чата
+     */
+    void connectToRoom(String roomName) {
         client.connectToRoom(roomName);
     }
 
-    public String getActiveNode() {
+    /**
+     * @return имя активного узла
+     */
+    String getActiveNode() {
         return activeNode;
     }
 
-    public void setActiveNode(String activeNode) {
+    /**
+     * @param activeNode имя активного узла
+     */
+    void setActiveNode(String activeNode) {
         this.activeNode = activeNode;
     }
 
+    /**
+     * @return unmodifiable roomsMap
+     */
     public Map<String, RoomNode> getRoomsMap() {
         return Collections.unmodifiableMap(roomsMap);
     }
 
     /**
-     * Добавляет/Удаляет узел в список развернутых пользователем узлов
+     * Добавляет/Удаляет узел в список развернутых пользователем узлов.
      */
     private class ExpansionListener implements TreeExpansionListener {
+
+        /**
+         * Развернуть ветку.
+         *
+         * @param event event
+         */
         @Override
         public void treeExpanded(TreeExpansionEvent event) {
             synchronized (UsersTree.this) {
@@ -166,6 +208,11 @@ public class UsersTree extends JTree {
             }
         }
 
+        /**
+         * Свернуть ветку.
+         *
+         * @param event event
+         */
         @Override
         public void treeCollapsed(TreeExpansionEvent event) {
             synchronized (UsersTree.this) {

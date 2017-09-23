@@ -7,9 +7,9 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 /**
- * Создает всплывающие меню для UsersTree
+ * Создает всплывающие меню для UsersTree.
  */
-class MenuFactory {
+final class MenuFactory {
     private static JPopupMenu roomMenu;
     private static JPopupMenu userMenu;
 
@@ -18,9 +18,13 @@ class MenuFactory {
 
     /**
      * Создает всплывающее меню, для узла чата,
-     * при помощи кторого можно подключиться к чату
+     * при помощи кторого можно подключиться к чату.
+     *
+     * @param client клиент
+     * @param usersTree дерево пользователей
+     * @return меню чата
      */
-    public static JPopupMenu initRoomMenu(final Client client, final UsersTree usersTree) {
+    static JPopupMenu initRoomMenu(final Client client, final UsersTree usersTree) {
         roomMenu = new JPopupMenu();
 
         JLabel openRoomLabel = new JLabel("Войти в чат");
@@ -38,9 +42,12 @@ class MenuFactory {
 
     /**
      * Создает всплывающее меню для узла пользователя,
-     * при помощи которго открывается вкладка приватного чата
+     * при помощи которго открывается вкладка приватного чата.
+     *
+     * @param usersTree дерево пользователей
+     * @return меню пользователей
      */
-    public static JPopupMenu initUserMenu(final UsersTree usersTree) {
+    static JPopupMenu initUserMenu(final UsersTree usersTree) {
         userMenu = new JPopupMenu();
 
         JLabel openPrivateLabel = new JLabel("Личное сообщение");
@@ -56,11 +63,17 @@ class MenuFactory {
         return userMenu;
     }
 
-    public static JPopupMenu getRoomMenu() {
+    /**
+     * @return roomMenu
+     */
+    static JPopupMenu getRoomMenu() {
         return roomMenu;
     }
 
-    public static JPopupMenu getUserMenu() {
+    /**
+     * @return userMenu
+     */
+    static JPopupMenu getUserMenu() {
         return userMenu;
     }
 }

@@ -5,11 +5,11 @@ import ru.devcorvette.chat.core.ResourceManager;
 import javax.swing.*;
 
 /**
- * Вкладка содержит в себе:
- * JTextPane - для отображения текста
- * JPanel - панель заголовка
+ * Вкладка окна сообщений содержит в себе:
+ * JTextPane - для отображения текста.
+ * JPanel - панель заголовка.
  */
-public class Tab extends JScrollPane {
+class Tab extends JScrollPane {
     private final TabManager tabManager;
 
     private final JLabel unreadLabel;
@@ -21,7 +21,13 @@ public class Tab extends JScrollPane {
     private int countUnreadMessage = 0;
     private boolean privateRoom = false;
 
-    public Tab(String title, TabManager tabManager) {
+    /**
+     * Инициализирует поля, собирает панель заголовка.
+     *
+     * @param title      заголовок
+     * @param tabManager tabManager
+     */
+    Tab(String title, TabManager tabManager) {
         this.tabManager = tabManager;
 
         titlePanel = new JPanel();
@@ -40,11 +46,15 @@ public class Tab extends JScrollPane {
     }
 
     /**
-     * Создает вкладку чат рума
-     * Иконка - чат рум
-     * Есть кнопка закрыть
+     * Создает вкладку чат рума.
+     * Иконка - чат рум.
+     * Есть кнопка закрыть.
+     *
+     * @param title заголовок
+     * @param tabManager tabManager
+     * @return вкладка
      */
-    public static Tab getRoomTab(String title, TabManager tabManager) {
+    static Tab getRoomTab(String title, TabManager tabManager) {
         Tab tab = new Tab(title, tabManager);
         tab.titleLabel.setIcon(ResourceManager.getImage("chatRoom16.png"));
         tab.titlePanel.add(new CloseTabButton(tab, tabManager));
@@ -53,12 +63,16 @@ public class Tab extends JScrollPane {
     }
 
     /**
-     * Создает вкладку приватного чата
-     * Иконка - приватный чат
-     * Есть кнопка закрыть
-     * privateRoom = true
+     * Создает вкладку приватного чата.
+     * Иконка - приватный чат.
+     * Есть кнопка закрыть.
+     * privateRoom = true.
+     *
+     * @param title заголовок
+     * @param tabManager tabManager
+     * @return вкладка
      */
-    public static Tab getPrivateTab(String title, TabManager tabManager) {
+    static Tab getPrivateTab(String title, TabManager tabManager) {
         Tab tab = new Tab(title, tabManager);
         tab.titleLabel.setIcon(ResourceManager.getImage("men.png"));
         tab.titlePanel.add(new CloseTabButton(tab, tabManager));
@@ -68,11 +82,15 @@ public class Tab extends JScrollPane {
     }
 
     /**
-     * Создает вкладку главного чата
-     * Иконка - чат рума
-     * Нет кнопки закрыть
+     * Создает вкладку главного чата.
+     * Иконка - чат рума.
+     * Нет кнопки закрыть.
+     *
+     * @param title      заголовок
+     * @param tabManager tabManager
+     * @return вкладка
      */
-    public static Tab getMainRoomTab(String title, TabManager tabManager) {
+    static Tab getMainRoomTab(String title, TabManager tabManager) {
         Tab tab = new Tab(title, tabManager);
         tab.titleLabel.setIcon(ResourceManager.getImage("chatRoom16.png"));
 
@@ -81,9 +99,9 @@ public class Tab extends JScrollPane {
 
     /**
      * Отображение на приватной не выделенной вкладке
-     * +1 непрочитанное сообщение
+     * +1 непрочитанное сообщение.
      */
-    public void addUnreadMessageCount() {
+    void addUnreadMessageCount() {
         if (!isSelected()) {
             countUnreadMessage++;
             unreadLabel.setText("[" + countUnreadMessage + "]");
@@ -91,15 +109,17 @@ public class Tab extends JScrollPane {
     }
 
     /**
-     * Очистка непрочитанных сообщений
+     * Очистка непрочитанных сообщений.
      */
-    public void clearUnreadMessageCount() {
+    void clearUnreadMessageCount() {
         countUnreadMessage = 0;
         unreadLabel.setText("");
     }
 
     /**
-     * Проверяет является ли данная вкладка выделенной
+     * Проверяет является ли данная вкладка выделенной.
+     *
+     * @return true если вкладка выделенная
      */
     private boolean isSelected() {
         synchronized (tabManager) {
@@ -107,23 +127,38 @@ public class Tab extends JScrollPane {
         }
     }
 
-    public JPanel getTitlePanel() {
+    /**
+     * @return панель заголовка
+     */
+    JPanel getTitlePanel() {
         return titlePanel;
     }
 
-    public JTextPane getTextPane() {
+    /**
+     * @return текстовое поле
+     */
+    JTextPane getTextPane() {
         return textPane;
     }
 
-    public String getTitle() {
+    /**
+     * @return  заголовок
+     */
+    String getTitle() {
         return title;
     }
 
-    public int getCountUnreadMessage() {
+    /**
+     * @return количество непрочитанных сообщений
+     */
+    int getCountUnreadMessage() {
         return countUnreadMessage;
     }
 
-    public boolean isPrivateRoom() {
+    /**
+     * @return true если данная вкладка- приватный чат
+     */
+    boolean isPrivateRoom() {
         return privateRoom;
     }
 }

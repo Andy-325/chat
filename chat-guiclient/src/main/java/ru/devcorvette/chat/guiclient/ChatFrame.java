@@ -14,6 +14,7 @@ import java.awt.*;
 /**
  * Главное окно программы.
  * Размещает все компонены отображения на панелях JPanel.
+ * Содержит методы вызова диалоговых окон дляч общения с пользователями.
  */
 public class ChatFrame extends JFrame {
     private static final Logger log = Logger.getLogger(ChatFrame.class);
@@ -42,6 +43,13 @@ public class ChatFrame extends JFrame {
     private SmilesMenu smilesMenu;
     private final Border raisedBevel = BorderFactory.createRaisedBevelBorder();
 
+    /**
+     * Создает главное окно, инициализирует поля,
+     * вызывает метолды размещения компонентов на главном окне.
+     *
+     * @param name   имя окна
+     * @param client клиент
+     */
     public ChatFrame(String name, GUIClient client) {
         super(name);
         this.client = client;
@@ -60,7 +68,7 @@ public class ChatFrame extends JFrame {
     }
 
     /**
-     * Собираем главное окно программы
+     * Собираем главное окно программы.
      */
     protected void initView() {
         Toolkit kit = Toolkit.getDefaultToolkit();
@@ -89,7 +97,7 @@ public class ChatFrame extends JFrame {
     }
 
     /**
-     * Собираем компоненты на центральной панели
+     * Собираем компоненты на центральной панели.
      */
     protected void initCentralPanel() {
         centralPanel.setBorder(raisedBevel);
@@ -124,19 +132,19 @@ public class ChatFrame extends JFrame {
     }
 
     /**
-     * Собираем компоненты на панели статуса
+     * Собираем компоненты на панели статуса.
      */
     protected void initStatusPanel() {
         statusPanel.setLayout(new BoxLayout(statusPanel, BoxLayout.X_AXIS));
         statusPanel.setBorder(raisedBevel);
-        statusPanel.add(LabelsFactory.initStatusLabel());
+        statusPanel.add(LabelsFactory.getConnectStatusLabel());
         statusPanel.setMinimumSize(new Dimension(50, 50));
     }
 
     /**
-     * Собираем компоненты на панели инструментов
+     * Собираем компоненты на панели инструментов.
      */
-    //можно еще добавить кнопку передачи файлов да и много чего еще
+    //можно еще добавить кнопку передачи файлов да и много чего еще :)
     protected void initToolsPanel() {
         toolsPanel.setLayout(new BoxLayout(toolsPanel, BoxLayout.X_AXIS));
         toolsPanel.setBorder(raisedBevel);
@@ -144,7 +152,7 @@ public class ChatFrame extends JFrame {
     }
 
     /**
-     * Собираем компоненты верхней панели
+     * Собираем компоненты верхней панели.
      */
     protected void initUpperPanel() {
         upperPanel.setLayout(new GridBagLayout());
@@ -174,16 +182,26 @@ public class ChatFrame extends JFrame {
                 GridBagConstraints.WEST);
 
         GridBag.addToPanel(upperPanel,
-                LabelsFactory.getUserName(client.getOwnName()),
+                LabelsFactory.getUserNameLabel(),
                 4, 0, 1, 1, 3, 3,
                 GridBagConstraints.REMAINDER,
                 GridBagConstraints.CENTER);
     }
 
+    /**
+     * Устанавливает фокус на поле ввода.
+     */
+    public void setFocus() {
+        entryField.requestFocus(true);
+    }
+
     /*Диаолговые окна*/
 
     /**
-     * Диалоговое окно, для получения информации от пользователя
+     * Диалоговое окно, для получения информации от пользователя.
+     *
+     * @param question вопрос
+     * @return ответ пользователя
      */
     public String getInformationFromUser(String question) {
         String reply = JOptionPane.showInputDialog(
@@ -192,15 +210,18 @@ public class ChatFrame extends JFrame {
                 this.getTitle(),
                 JOptionPane.QUESTION_MESSAGE);
 
-        if (reply == null)
+        if (reply == null) {
             return null;
+        }
 
         return reply;
     }
 
     /**
      * Выводит диалоговое окно с сообщением message
-     * и ставит фокус на поле ввода
+     * и ставит фокус на поле ввода.
+     *
+     * @param message сообщение
      */
     public void showInformMessage(String message) {
         JOptionPane.showMessageDialog(
@@ -213,6 +234,8 @@ public class ChatFrame extends JFrame {
 
     /**
      * Выводит диалоговое окно с ошибкой и сообщением message
+     *
+     * @param message сообщение
      */
     public void showErrorMessage(String message) {
         JOptionPane.showMessageDialog(
@@ -222,62 +245,100 @@ public class ChatFrame extends JFrame {
                 JOptionPane.ERROR_MESSAGE);
     }
 
-    public void setFocus() {
-        entryField.requestFocus(true);
-    }
-
+    /**
+     * @return панель статуса
+     */
     public JPanel getStatusPanel() {
         return statusPanel;
     }
 
+    /**
+     * @return панель инструментов
+     */
     public JPanel getToolsPanel() {
         return toolsPanel;
     }
 
+    /**
+     * @return верхнюю панель
+     */
     public JPanel getUpperPanel() {
         return upperPanel;
     }
 
+    /**
+     * @return центральную панель
+     */
     public JPanel getCentralPanel() {
         return centralPanel;
     }
 
+    /**
+     * @return поле ввода
+     */
     public JTextPane getEntryField() {
         return entryField;
     }
 
+    /**
+     * @param entryField поле ввода
+     */
     public void setEntryField(JTextPane entryField) {
         this.entryField = entryField;
     }
 
+    /**
+     * @return менеджер вкладок
+     */
     public TabManager getTabManager() {
         return tabManager;
     }
 
+    /**
+     * @param tabManager менеджер вкладок
+     */
     public void setTabManager(TabManager tabManager) {
         this.tabManager = tabManager;
     }
 
+    /**
+     * @return дерево пользователей
+     */
     public UsersTree getUsersTree() {
         return usersTree;
     }
 
+    /**
+     * @param usersTree дерево пользователей
+     */
     public void setUsersTree(UsersTree usersTree) {
         this.usersTree = usersTree;
     }
 
+    /**
+     * @return меню смайликов
+     */
     public SmilesMenu getSmilesMenu() {
         return smilesMenu;
     }
 
+    /**
+     * @param smilesMenu меню смайликов
+     */
     public void setSmilesMenu(SmilesMenu smilesMenu) {
         this.smilesMenu = smilesMenu;
     }
 
+    /**
+     * @return окно настроек
+     */
     public SettingsPane getSettingsPane() {
         return settingsPane;
     }
 
+    /**
+     * @param settingsPane окно настроек
+     */
     public void setSettingsPane(SettingsPane settingsPane) {
         this.settingsPane = settingsPane;
     }

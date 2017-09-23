@@ -1,14 +1,10 @@
 package ru.devcorvette.chat.server;
 
-import org.apache.log4j.Logger;
 import ru.devcorvette.chat.core.Client;
 import ru.devcorvette.chat.core.Smiles;
 
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 /**
  * Бот, который в ответ на команды пользователей выводит информацию
@@ -17,41 +13,22 @@ import java.util.Random;
  * Отвечает на пару фраз, а так же отвечает смайликом на смайлик :)
  */
 public class DateBot extends Client {
-    private static final Logger log = Logger.getLogger(DateBot.class);
-
     private static final Map<String, String> dateFormatMap = initDateFormatMap();
+    private static final Map<String, String> commandMap = initCommandMap();
     protected static final String INFO_MESSAGE =
             "Понимаю команды, отправленные личным сообщением: " +
                     "дата, день, месяц, год, время, час, минуты, секунды, инфо";
-    static final Map<String, String> commandMap = initCommandMap();
     protected static final String ERROR_MESSAGE = "Неизвесная команда";
     protected static final String GREETINGS_FORMAT = "Привет, %s! Я Дата Бот. %s.";
     private final SimpleDateFormat dateFormat = new SimpleDateFormat();
-    protected final String[] smilesNames = Smiles.getInstance().getSmilesNames().toArray(new String[Smiles.getInstance().getSmilesNumber()]);
-
-    public static void main(String[] args) {
-        //запуск сервера
-        new Thread(Server::run).start();
-
-        synchronized (Server.class) {
-            try {
-                while(!Server.isRunning()){
-                    Server.class.wait();
-                }
-            } catch (InterruptedException e) {
-                log.error("InterruptedException: ", e);
-                return;
-            }
-        }
-
-        //запуск бота
-        new Thread(() -> new DateBot().run()).start();
-    }
+    private final String[] smilesNames = initSmilesNames();
 
     /**
-     * Создает мап и заполняет её форматами даты и времени
+     * Создает мап и заполняет её форматами даты и времени.
+     *
+     * @return мап ключ = формат даты
      */
-    protected static Map<String, String> initDateFormatMap() {
+    private static Map<String, String> initDateFormatMap() {
         Map<String, String> map = new HashMap<>();
 
         map.put("дата", "d.MM.YYYY");
@@ -67,7 +44,20 @@ public class DateBot extends Client {
     }
 
     /**
-     * Создает мап и заполняет её парами вопрос - ответ
+     * Создает массив имен смайликов.
+     *
+     * @return массив имен смайликов
+     */
+    private static String[] initSmilesNames() {
+        Smiles smiles = Smiles.getInstance();
+        Set<String> names = smiles.getSmilesNames();
+        return names.toArray(new String[names.size()]);
+    }
+
+    /**
+     * Создает мап и заполняет её парами вопрос - ответ.
+     *
+     * @return мап вопрос = ответ
      */
     protected static Map<String, String> initCommandMap() {
         Map<String, String> map = new HashMap<>();
@@ -81,12 +71,14 @@ public class DateBot extends Client {
     }
 
     /**
-     * Генерирует и возвращает имя бота
+     * Генерирует и возвращает имя бота.
      */
     @Override
     protected String initOwnName() {
         Random random = new Random();
-        return ownName = "date_bot_" + random.nextInt(100);
+        String name = "date_bot_" + random.nextInt(100);
+        setOwnName(name);
+        return name;
     }
 
     @Override
@@ -100,6 +92,11 @@ public class DateBot extends Client {
      * Ищет в сообщении команду и отвечает на нее или выводит дату.
      * <p>
      * На смайлик отвечает смайликом.
+     *
+     * @param text      текст сообщения
+     * @param recipient получатель
+     * @param sender    отправитель
+     * @return true если бот ответил на сообщение
      */
     @Override
     public boolean receiveTextMessage(String text, String recipient, String sender) {
@@ -152,11 +149,16 @@ public class DateBot extends Client {
     }
 
     /**
-     * Отправляет приветсвие каждому новому участнику главного чата
+     * Отправляет приветсвие каждому новому участнику главного чата.
+     *
+     * @param users    список пользователей чат рум
+     * @param roomName имя чат рум
+     * @param sender   отправитель
+     * @return true если бот отправил ответ
      */
     @Override
     public boolean addUserToRoom(String[] users, String roomName, String sender) {
-        if (!roomName.equals(mainRoom))
+        if (!roomName.equals(getMainRoom()))
             return false;
 
         sendTextMessage(
@@ -167,11 +169,26 @@ public class DateBot extends Client {
 
     @Override
     public boolean removeUserFromRoom(String[] users, String roomName, String sender) {
+        //do nothing
         return false;
     }
 
     @Override
     public void errorRoomName() {
         //do nothing
+    }
+
+    /**
+     * @return массив имен смайликов
+     */
+    public String[] getSmilesNames() {
+        return smilesNames;
+    }
+
+    /**
+     * @return мап команд
+     */
+    public static Map<String, String> getCommandMap() {
+        return commandMap;
     }
 }

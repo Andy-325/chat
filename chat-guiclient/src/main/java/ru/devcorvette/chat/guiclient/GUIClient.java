@@ -8,9 +8,14 @@ import javax.swing.*;
 import java.util.Arrays;
 
 /**
- * Клиент c GUI интерфейсом
- * Реализует методы примема команд и сообщений с сервера. А так же
- * команды от пользователя к серверу.
+ * Клиент c GUI интерфейсом.
+ * Реализует методы примема команд и сообщений с сервера.
+ * А так же команды от пользователя к серверу.
+ * <p>
+ * Переопреляет методы для общения с пользователем - общение через
+ * всплывающие окна класса ChatFrame.
+ * <p>
+ * Взаимодействует с компонентами GUI интерфейса entryField, usersTree.
  */
 public class GUIClient extends Client {
     private final ChatFrame frame;
@@ -18,19 +23,24 @@ public class GUIClient extends Client {
     private final JTextPane entryField;
     private final UsersTree usersTree;
 
-    public GUIClient() {
-        frame = new ChatFrame("Чат", this);
+    /**
+     * Создает экземпляр класса.
+     * Создает главное окно чата, присваивает ему имя.
+     * Получает ссылки из frame на tabManager, entryField, usersTree.
+     *
+     * @param frameName имя главного окна
+     */
+    public GUIClient(String frameName) {
+        frame = new ChatFrame(frameName, this);
         tabManager = frame.getTabManager();
         entryField = frame.getEntryField();
         usersTree = frame.getUsersTree();
     }
 
-    public static void main(String[] args) {
-        new GUIClient().run();
-    }
-
     /**
-     * Выводит сообщение об ошибке через frame
+     * Выводит сообщение об ошибке через frame.
+     *
+     * @param message сообщение
      */
     @Override
     public void showErrorMessage(String message) {
@@ -38,7 +48,10 @@ public class GUIClient extends Client {
     }
 
     /**
-     * Задает вопрос пользователю через frame
+     * Задает вопрос пользователю через frame.
+     *
+     * @param question вопрос
+     * @return ответ пользователя
      */
     @Override
     public String getInformationFromUser(String question) {
@@ -46,7 +59,9 @@ public class GUIClient extends Client {
     }
 
     /**
-     * Выводит информационное сообщение через frame
+     * Выводит информационное сообщение через frame.
+     *
+     * @param message сообщение
      */
     @Override
     public void showInformMessage(String message) {
@@ -54,8 +69,10 @@ public class GUIClient extends Client {
     }
 
     /**
-     * Изменяет значение поля clientConnected
-     * Вызывает метод отвечающий за статус соединения у отоброжения
+     * Изменяет значение поля clientConnected.
+     * Изменяет лейблы "имя пользователя" и "статус подключения".
+     *
+     * @param clientConnected статус подключения
      */
     @Override
     protected void changeConnectionStatus(boolean clientConnected) {
@@ -66,7 +83,8 @@ public class GUIClient extends Client {
     }
 
     /**
-     * Отправляет сообщение, текст берет из EntryField, адресада берет из TabManager
+     * Отправляет сообщение, текст берет из entryField,
+     * адресада берет из tabManager.
      */
     public void sendTextMessage() {
         String roomName = tabManager.getSelectedTitle();
@@ -81,15 +99,18 @@ public class GUIClient extends Client {
         sendTextMessage(text, roomName);
     }
 
-    /*Обработка команд с сервера*/
-
     /**
      * Выводит сообщения в окна чата.
      * Возвращает true, если сообщение было напечатано.
+     *
+     * @param text      текст сообщения
+     * @param recipient получатель
+     * @param sender    отправитель
+     * @return true если сообщение было напечатано во владку
      */
     @Override
     public boolean receiveTextMessage(String text, String recipient, String sender) {
-        return tabManager.printMessage(text, recipient, sender, ownName);
+        return tabManager.printMessage(text, recipient, sender, getOwnName());
     }
 
     /**
@@ -97,6 +118,11 @@ public class GUIClient extends Client {
      * если отправителем является сам клиент - открывает окно сообщений чата.
      * <p>
      * Отправляет информационное сообщение об добавлении пользователя.
+     *
+     * @param users    список пользователей чат рум
+     * @param roomName имя чат рум
+     * @param sender   отправитель
+     * @return true если сообщение было напечатано во владку
      */
     @Override
     public boolean addUserToRoom(String[] users, String roomName, String sender) {
@@ -118,6 +144,11 @@ public class GUIClient extends Client {
      * если отправителем является сам клиент - закрывает окно сообщений чата
      * <p>
      * Отправляет информационное сообщение об удалении пользователя
+     *
+     * @param users    список пользователей чат рум
+     * @param roomName имя чат рум
+     * @param sender   отправитель
+     * @return true если сообщение было напечатано во владку
      */
     @Override
     public boolean removeUserFromRoom(String[] users, String roomName, String sender) {
@@ -131,6 +162,9 @@ public class GUIClient extends Client {
                 null);
     }
 
+    /**
+     * @return главное окно чата
+     */
     public ChatFrame getFrame() {
         return frame;
     }

@@ -70,7 +70,7 @@ public class UsersTreeTest {
     }
 
     /**
-     * Проверка добавления / удаления пользователей в чат рум
+     * Проверка добавления / удаления пользователей в чат рум.
      */
     @Test
     public void checkChangeRoom() {
@@ -88,6 +88,6 @@ public class UsersTreeTest {
         UserNode user = (UserNode) usersTree.getRoomsMap().get(roomName).getFirstChild();
 
         assertTrue("The name of the remaining user is not correct",
-                user.name.equals(user2));
+                user.getName().equals(user2));
     }
 }

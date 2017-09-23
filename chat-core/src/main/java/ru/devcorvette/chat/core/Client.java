@@ -13,13 +13,11 @@ import java.net.UnknownHostException;
  */
 public abstract class Client {
     private static final Logger log = Logger.getLogger(Client.class);
-    protected Connection connection;
-    protected volatile boolean clientConnected = false;
-    protected String mainRoom;
-    protected String ownName = "";
+    private Connection connection;
+    private volatile boolean clientConnected = false;
+    private String mainRoom;
+    private String ownName = "";
     private boolean isUserNameError = false; //ошибка инициализации имени пользователя
-
-    /* Инициализация*/
 
     /**
      * Подключение к серверу.
@@ -43,7 +41,9 @@ public abstract class Client {
                 return Integer.parseInt(port);
             } catch (NumberFormatException e) {
                 port = getInformationFromUser("Введите порт сервера:");
-                if (port == null) return null;
+                if (port == null) {
+                    return null;
+                }
                 ResourceManager.writeConfig(ResourceManager.SERVER_PORT, port);
             }
         }
@@ -55,14 +55,15 @@ public abstract class Client {
      *
      * @return алресс сервера
      */
-    public String getServerAddress() {
+    protected String getServerAddress() {
         String address = ResourceManager.getConfig(ResourceManager.SERVER_ADDRESS);
 
         while (address.isEmpty()) {
             address = getInformationFromUser("Введите адрес сервера.");
-            if (address == null) return null;
+            if (address == null) {
+                return null;
+            }
         }
-
         ResourceManager.writeConfig(ResourceManager.SERVER_ADDRESS, address);
         return address;
     }
@@ -121,15 +122,6 @@ public abstract class Client {
     }
 
     /**
-     * Статус подключения к серверу.
-     *
-     * @return true если клиент подключен к серверу
-     */
-    public boolean isClientConnected() {
-        return clientConnected;
-    }
-
-    /**
      * Метод устанавливает значение поля clientConnected.
      *
      * @param clientConnected статус подключения
@@ -144,8 +136,6 @@ public abstract class Client {
     }
 
     /**
-     * Возвращает имя главного чата.
-     *
      * @return имя главного чата
      */
     public String getMainRoomName() {
@@ -153,8 +143,6 @@ public abstract class Client {
     }
 
     /**
-     * Присваивает имя главному чату.
-     *
      * @param mainRoom имя главного чата
      */
     public void setMainRoom(String mainRoom) {
@@ -162,8 +150,6 @@ public abstract class Client {
     }
 
     /**
-     * Возвращает имя клиента.
-     *
      * @return имя клиента
      */
     public String getOwnName() {
@@ -171,15 +157,11 @@ public abstract class Client {
     }
 
     /**
-     * Присваивает имя клиента.
-     *
      * @param ownName имя клиента
      */
     public void setOwnName(String ownName) {
         this.ownName = ownName;
     }
-
-        /*Команды от пользователя*/
 
     /**
      * Запрашивает у пользователя имя нового чата
@@ -213,13 +195,34 @@ public abstract class Client {
         );
     }
 
-    /*Отправка сообщений на сервер*/
+    /**
+     * Статус подключения к серверу.
+     *
+     * @return true если клиент подключен к серверу
+     */
+    public boolean isClientConnected() {
+        return clientConnected;
+    }
+
+    /**
+     * @param clientConnected статус подключения
+     */
+    public void setClientConnected(boolean clientConnected) {
+        this.clientConnected = clientConnected;
+    }
+
+    /**
+     * @return имя главного чата
+     */
+    public String getMainRoom() {
+        return mainRoom;
+    }
 
     /**
      * Создает новое текстовое сообщение, используя переданный текст и
      * отправляет на сервер.
      *
-     * @param text текст сообщения
+     * @param text      текст сообщения
      * @param recipient получатель
      */
     public void sendTextMessage(String text, String recipient) {
@@ -249,14 +252,12 @@ public abstract class Client {
         }
     }
 
-    /*Обработка сообщений и команд с сервера*/
-
     /**
      * Получение текстого сообщения.
      *
-     * @param text текст сообщения
+     * @param text      текст сообщения
      * @param recipient получатель
-     * @param sender отправитель
+     * @param sender    отправитель
      * @return true если операция прошла успешно
      */
     public abstract boolean receiveTextMessage(String text, String recipient, String sender);
@@ -264,9 +265,9 @@ public abstract class Client {
     /**
      * Добавляет пользователя в чат рум
      *
-     * @param users список пользователей чат рум
+     * @param users    список пользователей чат рум
      * @param roomName имя чат рум
-     * @param sender отправитель
+     * @param sender   отправитель
      * @return true если операция прошла успешно
      */
     public abstract boolean addUserToRoom(String[] users, String roomName, String sender);
@@ -274,9 +275,9 @@ public abstract class Client {
     /**
      * Удаляет пользователя из чат рума.
      *
-     * @param users список пользователей чат рум
+     * @param users    список пользователей чат рум
      * @param roomName имя чат рум
-     * @param sender отправитель
+     * @param sender   отправитель
      * @return true если операция прошла успешно
      */
     public abstract boolean removeUserFromRoom(String[] users, String roomName, String sender);
@@ -313,15 +314,17 @@ public abstract class Client {
             try (Connection connection = new Connection(new Socket(address, port))) {
                 Client.this.connection = connection;
 
-                if (log.isInfoEnabled())
+                if (log.isInfoEnabled()) {
                     log.info("CONNECTION WITH SERVER IS ESTABLISHED.");
+                }
 
                 clientHandshake();
                 clientMainLoop();
 
             } catch (UnknownHostException e) {
-                if (log.isInfoEnabled())
+                if (log.isInfoEnabled()) {
                     log.info("The address " + address + " could not be determined.");
+                }
                 showErrorMessage("Не возможно подключиться к серверу " + address);
 
             } catch (ClassNotFoundException e) {
@@ -356,23 +359,26 @@ public abstract class Client {
                 switch (type) {
                     case NAME_REQUEST:
                         connection.send(new Message(MessageType.USER_NAME, initOwnName()));
-                        if (log.isDebugEnabled())
+                        if (log.isDebugEnabled()) {
                             log.debug("HANDSHAKE sent user name "
                                     + ownName + " to the server.");
+                        }
                         break;
 
                     case NAME_ERROR:
                         repeatInitOwnName();
-                        if (log.isDebugEnabled())
+                        if (log.isDebugEnabled()) {
                             log.debug("HANDSHAKE resubmit user name "
                                     + ownName + " to the server.");
+                        }
                         break;
 
                     case MAIN_ROOM_NAME:
                         mainRoom = m.getText();
                         changeConnectionStatus(true);
-                        if (log.isDebugEnabled())
+                        if (log.isDebugEnabled()) {
                             log.debug("Process HANDSHAKE to the server is finished.");
+                        }
                         return;
 
                     default:
@@ -399,26 +405,30 @@ public abstract class Client {
 
                 switch (type) {
                     case TEXT:
-                        if (log.isDebugEnabled())
+                        if (log.isDebugEnabled()) {
                             log.debug("Received a 'TEXT' message.");
+                        }
                         receiveTextMessage(m.getText(), m.getRecipient(), m.getSender());
                         break;
 
                     case ADD_USER_TO_ROOM:
-                        if (log.isDebugEnabled())
+                        if (log.isDebugEnabled()) {
                             log.debug("Received a 'ADD_USER_TO_ROOM'.");
+                        }
                         addUserToRoom(m.getUsers(), m.getRoomName(), m.getSender());
                         break;
 
                     case REMOVE_USER_TO_ROOM:
-                        if (log.isDebugEnabled())
+                        if (log.isDebugEnabled()) {
                             log.debug("Received a 'REMOVE_USER_TO_ROOM' message.");
+                        }
                         removeUserFromRoom(m.getUsers(), m.getRoomName(), m.getSender());
                         break;
 
                     case NAME_ERROR:
-                        if (log.isDebugEnabled())
+                        if (log.isDebugEnabled()) {
                             log.debug("Received a 'NAME_ERROR' message.");
+                        }
                         errorRoomName();
                         break;
 

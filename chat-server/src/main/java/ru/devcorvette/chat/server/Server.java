@@ -28,15 +28,11 @@ public class Server {
     private static String mainRoom;
     private static boolean running = false;
 
-    public static void main(String[] args) {
-        run();
-    }
-
     /**
      * Запускает сервер - создает объект ServerSocket, читая порт
-     * и имя главного чата через ResourceManager
+     * и имя главного чата через ResourceManager.
      * Запускает цикл - который создает для каждого нового соединения
-     * экземпляр класса Handler (новое соединение)
+     * экземпляр класса Handler (новое соединение).
      */
     public static void run() {
         int port = ResourceManager.getPort();
@@ -66,7 +62,9 @@ public class Server {
 
     /**
      * Метод отправляет сообщение адресату 3 разными способами
-     * в зависимости от адресата
+     * в зависимости от адресата.
+     *
+     * @param m сообщение
      */
     public static void sendMessageToRecipient(Message m) {
         String recipient = m.getRecipient();
@@ -120,6 +118,9 @@ public class Server {
     /**
      * Создает новый чат рум, предварительно проверяя имя на валидность,
      * добавляет его в rooms. Отправляет всем сообщение о новом чате.
+     *
+     * @param userName имя пользователя создающего чат рум
+     * @param roomName имя чат рум
      */
     public static void createNewRoom(String userName, String roomName) {
         if (!validateName(roomName, userName)) return;
@@ -128,8 +129,9 @@ public class Server {
         room.add(userName);
         rooms.put(roomName, room);
 
-        if (log.isDebugEnabled())
+        if (log.isDebugEnabled()) {
             log.debug(userName + " create " + roomName);
+        }
 
         sendChangeUsersMessage(MessageType.ADD_USER_TO_ROOM, userName, roomName);
     }
@@ -143,20 +145,22 @@ public class Server {
      */
     public static void connectRoom(String userName, String roomName) {
         if (!rooms.containsKey(roomName)) {
-            if (log.isDebugEnabled())
+            if (log.isDebugEnabled()) {
                 log.debug(roomName + " is not found. Connection is not possible.");
+            }
             return;
         }
 
         CopyOnWriteArrayList<String> room = rooms.get(roomName);
 
-        if (room.contains(userName)) return;
-
+        if (room.contains(userName)) {
+            return;
+        }
         room.add(userName);
-        if (log.isDebugEnabled())
+        if (log.isDebugEnabled()) {
             log.debug(String.format("Add %s to the %s. The room size is %s users.",
                     userName, roomName, room.size()));
-
+        }
         sendChangeUsersMessage(MessageType.ADD_USER_TO_ROOM, userName, roomName);
     }
 
@@ -169,6 +173,9 @@ public class Server {
      * <p>
      * Рассылает сообщение об изменении пользователей в чате.
      * Если пользователей в чате больше нет, то чат удаляется.
+     *
+     * @param userName имя пользователя который покидает чат рум
+     * @param roomName имя чат рум
      */
     public static void leaveRoom(String userName, String roomName) {
         //если не найден чат рум
@@ -192,28 +199,31 @@ public class Server {
                     roomName,
                     userName,
                     userName));
-            if (log.isDebugEnabled())
+            if (log.isDebugEnabled()) {
                 log.debug(userName + " is not found. Leaving room is not possible.");
+            }
             return;
         }
 
         room.remove(userName);
-        if (log.isDebugEnabled())
+        if (log.isDebugEnabled()) {
             log.debug(String.format("Remove %s to the %s. The room size is %s users.",
                     userName, roomName, room.size()));
-
+        }
         if (room.isEmpty()) {
             rooms.remove(roomName);
-            if (log.isDebugEnabled())
+            if (log.isDebugEnabled()) {
                 log.debug("Remove " + roomName);
+            }
         }
-
         sendChangeUsersMessage(MessageType.REMOVE_USER_TO_ROOM, userName, roomName);
     }
 
     /**
      * Удаляет пользователя из списка подключений
-     * и из всех чатов
+     * и из всех чатов.
+     *
+     * @param userName имя пользователя
      */
     public static void leaveAllRooms(String userName) {
         users.remove(userName);
@@ -228,7 +238,11 @@ public class Server {
     }
 
     /**
-     * Вызывает validateName с параметром connection
+     * Вызывает validateName с параметром connection.
+     *
+     * @param name     проверяемое имя
+     * @param enquired имя запрошающего
+     * @return true если имя прошло проверку
      */
     public static boolean validateName(String name, String enquired) {
         return validateName(name, users.get(enquired));
@@ -238,6 +252,10 @@ public class Server {
      * Проверяет имя на валидность: чтобы оно не быо null, пустым или повторяось.
      * Если проверку не прошло отправяет NAME ERROR message to connection
      * и возвращает false.
+     *
+     * @param name       проверяемое имя
+     * @param connection имя запрошающего
+     * @return true если имя прошло проверку
      */
     public static boolean validateName(String name, Connection connection) {
         if (name == null ||
@@ -246,9 +264,7 @@ public class Server {
                 mainRoom.equals(name) ||
                 name.isEmpty()) {
             try {
-                connection.send(new Message(
-                        MessageType.NAME_ERROR));
-
+                connection.send(new Message(MessageType.NAME_ERROR));
                 if (log.isDebugEnabled()) {
                     log.debug(MessageType.NAME_ERROR + " message was sent.");
                 }
@@ -256,15 +272,21 @@ public class Server {
                 log.error("Connection have the IOException: ", e);
             }
             return false;
+        } else {
+            if (log.isDebugEnabled()) {
+                log.debug(name + " name was adopted.");
+            }
+            return true;
         }
-        if (log.isDebugEnabled())
-            log.debug(name + " name was adopted.");
-        return true;
     }
 
     /**
      * Отправяет сообщение в главный чат об изменении в списке пользователей чат рума
-     * и со списком всех пользоватеей данного чат рума
+     * и со списком всех пользоватеей данного чат рума.
+     *
+     * @param type     ADD_USER or REMOVE_USER
+     * @param userName имя пользователя сообщающего об изменении
+     * @param roomName имя чат рум
      */
     private static void sendChangeUsersMessage(
             MessageType type,
@@ -287,33 +309,51 @@ public class Server {
                 userName));
     }
 
-    public static Map<String, CopyOnWriteArrayList<String>> getRooms() {
+    /**
+     * @return мап имя чат рум = список участников
+     */
+    protected static Map<String, CopyOnWriteArrayList<String>> getRooms() {
         return rooms;
     }
 
-    public static Map<String, Connection> getUsers() {
+    /**
+     * @return мап имя пользователя = connection
+     */
+    protected static Map<String, Connection> getUsers() {
         return users;
     }
 
+    /**
+     * @return имя главного чата
+     */
     public static String getMainRoom() {
         return mainRoom;
     }
 
+    /**
+     * @param mainRoom имя главного чата
+     */
     public static void setMainRoom(String mainRoom) {
         Server.mainRoom = mainRoom;
     }
 
+    /**
+     * @return true если сервер запущен
+     */
     public static boolean isRunning() {
         return running;
     }
 
     /**
      * Класс - нить, устанавливает соединение с клиентом (serverHandshake)
-     * Содержит основной цикл приема сообщений от клиента (serverMainLoop)
+     * Содержит основной цикл приема сообщений от клиента (serverMainLoop).
      */
     public static class Handler extends Thread {
         private final Socket socket;
 
+        /**
+         * @param socket сокентное соединение с клиентом
+         */
         public Handler(Socket socket) {
             this.socket = socket;
         }
@@ -321,7 +361,7 @@ public class Server {
         /**
          * Устанавливает соединение, запускает процесс "Рукоподажатия" с клиентом,
          * Запускает главныфй цикл, обрабатывапет исключения,
-         * закрывает соединение
+         * закрывает соединение.
          */
         @Override
         public void run() {
@@ -356,23 +396,31 @@ public class Server {
         }
 
         /**
-         * "Рукопожатие" клиента с сервером
+         * "Рукопожатие" клиента с сервером.
          * Метод запрашивает у connection имя пользователя проверяет его на валидность,
          * добавляет новое сосединение и возвращает имя нового клиента.
+         *
+         * @param connection соединение с клиентом
+         * @return имя клиента
+         * @throws IOException            если проблемы с чтением/записью из потоков
+         * @throws ClassNotFoundException если произошла проблема сериализации
+         *                                во время чтения/записи из потока
          */
         public String serverHandshake(Connection connection)
                 throws IOException, ClassNotFoundException {
 
-            if (log.isDebugEnabled())
+            if (log.isDebugEnabled()) {
                 log.debug("Process HANDSHAKE to the user is running.");
+            }
 
             String userName = null;
 
             while (userName == null) {
                 connection.send(new Message(MessageType.NAME_REQUEST));
 
-                if (log.isDebugEnabled())
+                if (log.isDebugEnabled()) {
                     log.debug("HANDSHAKE sent the 'NAME REQUEST' message.");
+                }
 
                 Message m = connection.receive();
                 MessageType type = m.getType();
@@ -385,6 +433,7 @@ public class Server {
                 userName = m.getText();
 
                 if (!validateName(userName, connection)) {
+                    userName = null;
                     continue;
                 }
 
@@ -410,8 +459,12 @@ public class Server {
         }
 
         /**
-         * Главный цикл соединения с клиентом
-         * Принимает сообщение от пользователя и вызывает соответсвующие методы
+         * Главный цикл соединения с клиентом.
+         * Принимает сообщение от пользователя и вызывает соответсвующие методы.
+         *
+         * @param connection соединение с клиентом
+         * @param userName имя клиента
+         * @throws IOException если произошла ошибка чтения из потока
          */
         public void serverMainLoop(Connection connection, String userName)
                 throws IOException {

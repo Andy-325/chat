@@ -13,7 +13,7 @@ import java.util.List;
 /**
  * Окно настроек.
  * Назначает горячие клавиши для отправкисообщений.
- * Запоминает адрес и порт сервера
+ * Запоминает адрес и порт сервера.
  */
 public class SettingsPane extends JDialog {
     private final ChatFrame frame;
@@ -21,6 +21,11 @@ public class SettingsPane extends JDialog {
     private final SendMessageSettings sendMessage;
     private final List<Settings> settingsList = new ArrayList<>();
 
+    /**
+     * Создает объект settings pane, connect, send message.
+     *
+     * @param frame окно настроек
+     */
     public SettingsPane(ChatFrame frame) {
         super(frame, "Настройки");
         this.frame = frame;
@@ -35,7 +40,7 @@ public class SettingsPane extends JDialog {
     }
 
     /**
-     * Метод собирвет компоненты диалогового окна вместе
+     * Собирвет компоненты диалогового окна вместе.
      */
     private void createDialogPane() {
         Container pane = this.getContentPane();
@@ -89,7 +94,9 @@ public class SettingsPane extends JDialog {
     }
 
     /**
-     * Перед тем как стать видимым метод загружает актуальные настройки
+     * Перед тем как стать видимым метод загружает актуальные настройки.
+     *
+     * @param visible видимый / невидимый
      */
     @Override
     public void setVisible(boolean visible) {
@@ -102,7 +109,7 @@ public class SettingsPane extends JDialog {
     }
 
     /**
-     * Закрывает окно сохраняя настройки
+     * Закрывает окно сохраняя настройки.
      */
     public void saveAndExit() {
         for (Settings set : settingsList) {
@@ -113,7 +120,7 @@ public class SettingsPane extends JDialog {
     }
 
     /**
-     * Закрывает окно не сохраняя настройки
+     * Закрывает окно не сохраняя настройки.
      */
     public void exitWithoutSave() {
         setVisible(false);

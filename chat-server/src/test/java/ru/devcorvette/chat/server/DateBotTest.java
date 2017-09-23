@@ -60,7 +60,7 @@ public class DateBotTest {
      */
     @Test
     public void checkCommandMessage() {
-        for (Map.Entry<String, String> pair : DateBot.commandMap.entrySet()) {
+        for (Map.Entry<String, String> pair : DateBot.getCommandMap().entrySet()) {
             bot.receiveTextMessage(pair.getKey(), botName, sender);
             assertTrue(answer + " is not equals " + pair.getValue(),
                     answer.equals(pair.getValue()));
@@ -72,10 +72,11 @@ public class DateBotTest {
      */
     @Test
     public void checkSmileMessage() {
-        bot.receiveTextMessage(bot.smilesNames[0], botName, sender);
+        String[] smilesNames = bot.getSmilesNames();
+        bot.receiveTextMessage(smilesNames[0], botName, sender);
         answer = answer.replaceAll("\\*", "");
         assertTrue("Bot answer is not contain smile",
-                Arrays.asList(bot.smilesNames).contains(answer));
+                Arrays.asList(smilesNames).contains(answer));
     }
 
     /**

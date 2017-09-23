@@ -16,9 +16,12 @@ public class TabManager extends JTabbedPane {
     private final PrintManager printManager;
 
     /**
-     * Инициализация объекта
+     * Инициализация объекта.
      * Добавляет слушателя, который отслеживает
-     * выделение вкладок
+     * выделение вкладок.
+     *
+     * @param frame  окно чата
+     * @param client клиент
      */
     public TabManager(ChatFrame frame, Client client) {
         this.client = client;
@@ -28,13 +31,24 @@ public class TabManager extends JTabbedPane {
         this.addChangeListener(new ChangeTabAction(this, frame));
     }
 
+    /**
+     * Создает tabManager и printManager.
+     *
+     * @param client клиент
+     */
     public TabManager(Client client) {
         this.client = client;
         this.printManager = new PrintManager(this);
     }
 
     /**
-     * Печатает сообщение во вкладку через PrintManager
+     * Печатает сообщение во вкладку через PrintManager.
+     *
+     * @param text      текст сообщения
+     * @param recipient получатель
+     * @param sender    отправитель
+     * @param ownName   собственное имя
+     * @return true если сообщение напечатано
      */
     public boolean printMessage(String text, String recipient, String sender, String ownName) {
         return printManager.print(text, recipient, sender, ownName);
@@ -45,6 +59,11 @@ public class TabManager extends JTabbedPane {
      * Они бывают трех видов: чат рум, главный чат, приватный чат.
      * К каждой вкладке добавляет titlePanel, содержащую счетчик не прочитанных сообщений,
      * имя вкладки и кнопка закрыть.
+     *
+     * @param title           заголовок
+     * @param tabModification приватный чат и чат рум
+     * @param select          выделить вкладку
+     * @return вкладка
      */
     public Tab addMessagesTab(String title, int tabModification, boolean select) {
         Tab tab = getTabAtTitle(title);
@@ -72,7 +91,9 @@ public class TabManager extends JTabbedPane {
     }
 
     /**
-     * Закрывает вкладку Tab по имени title
+     * Закрывает вкладку Tab по имени title.
+     *
+     * @param title заголовок
      */
     public void removeTabAtTitle(String title) {
         Tab tab = getTabAtTitle(title);
@@ -86,6 +107,9 @@ public class TabManager extends JTabbedPane {
     /**
      * Проходит циклом по всем компонентам.
      * Возвращает вкладку Tab, если title компонента совпадает.
+     *
+     * @param title заголовок
+     * @return вкладка
      */
     public synchronized Tab getTabAtTitle(String title) {
         for (int i = 0; i < getTabCount(); i++) {
@@ -99,7 +123,9 @@ public class TabManager extends JTabbedPane {
     }
 
     /**
-     * Возвращает имя title выделенной вкладки
+     * Возвращает заголовок title выделенной вкладки.
+     *
+     * @return заголовок
      */
     public synchronized String getSelectedTitle() {
         int index = getSelectedIndex();
@@ -109,7 +135,8 @@ public class TabManager extends JTabbedPane {
     }
 
     /**
-     * Возвращает true, если вкладка приватный чат
+     * @param title заголовок
+     * @return true, если вкладка приватный чат
      */
     public boolean isPrivateTab(String title) {
         return getTabAtTitle(title).isPrivateRoom();
@@ -117,6 +144,8 @@ public class TabManager extends JTabbedPane {
 
     /**
      * Отправляет запрос на сервер о выходе из чат рума.
+     *
+     * @param roomName имя чат рум
      */
     public void sendLeaveRoomRequest(String roomName) {
         client.leaveRoom(roomName);

@@ -5,51 +5,63 @@ import ru.devcorvette.chat.core.ResourceManager;
 import javax.swing.*;
 
 /**
- * Создает лейблы главного окна чата
+ * Создает лейблы главного окна чата.
  */
-public class LabelsFactory {
-    public static final String connectText = "Подключен";
-    public static final String disconnectText = "Не подключен";
-    public static final ImageIcon green = ResourceManager.getImage("green.png");
-    public static final ImageIcon red = ResourceManager.getImage("red.png");
-    private static JLabel userName;
-    private static JLabel connectStatusLabel;
+public final class LabelsFactory {
+    protected static final String connectText = "Подключен";
+    protected static final String disconnectText = "Не подключен";
+    protected static final ImageIcon green = ResourceManager.getImage("green.png");
+    protected static final ImageIcon red = ResourceManager.getImage("red.png");
+    private static final String nameFormat = "Ваш ник: ";
+    private static JLabel userName = new JLabel();
+    private static JLabel connectStatusLabel = new JLabel();
 
     private LabelsFactory() {
     }
 
     /**
-     * Создает два лейбла Поключено/Неподключено присаивает
-     * connectStatusLabel значение - неподключено.
+     * Если у connectStatusLabel не инициализированна иконка,
+     * метод присвает disconnectText и ImageIcon red.
+     *
+     * @return лейбл статус подключения
      */
-    public static JLabel initStatusLabel() {
-        connectStatusLabel = new JLabel();
-        connectStatusLabel.setText(disconnectText);
-        connectStatusLabel.setIcon(red);
-
-        return connectStatusLabel;
-    }
-
-
-    public static JLabel getUserName(String name) {
-        if (userName == null)
-            userName = new JLabel("Ваш ник: " + name);
-
-        return userName;
-    }
-
-    public static void setUserName(String name) {
-        if (userName != null) {
-            userName.setText("Ваш ник: " + name);
-        }
-    }
-
     public static JLabel getConnectStatusLabel() {
+        if (connectStatusLabel.getIcon() == null){
+            connectStatusLabel.setText(disconnectText);
+            connectStatusLabel.setIcon(red);
+        }
+
         return connectStatusLabel;
     }
 
     /**
-     * Устанавливает значение для connectStatusLabel
+     * Если userName не присвое текст,
+     * то метод присваивает ему текст userName.
+     *
+     * @return лейбл с именем пользователя
+     */
+    public static JLabel getUserNameLabel() {
+        if (userName.getText().isEmpty()){
+            userName.setText(nameFormat);
+        }
+        return userName;
+    }
+
+    /**
+     * Устанавливает для лейбла userName текст
+     * с именем пользователя.
+     *
+     * @param name имя пользователя
+     */
+    public static void setUserName(String name) {
+        userName.setText(nameFormat + name);
+    }
+
+    /**
+     * В зависимости от статуса подклчения устанавливает
+     * для connectStatusLabel текст и иконку.
+     *
+     * @param b статус подключения к серверу
      */
     public static void setConnectStatusLabel(boolean b) {
         if (b) {

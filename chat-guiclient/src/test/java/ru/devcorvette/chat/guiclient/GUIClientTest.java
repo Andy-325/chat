@@ -21,7 +21,7 @@ public class GUIClientTest {
 
     @BeforeClass
     public static void createClient() {
-        client = new GUIClient() {
+        client = new GUIClient("Test") {
             @Override
             public void showErrorMessage(String message) {
                 //do nothing
@@ -51,8 +51,10 @@ public class GUIClientTest {
         JLabel connectLabel = LabelsFactory.getConnectStatusLabel();
 
         assertTrue("Client connected is not true", client.isClientConnected());
-        assertTrue("Label text is not correct", connectLabel.getText().equals(LabelsFactory.connectText));
-        assertTrue("Label icon is not correct", connectLabel.getIcon().equals(LabelsFactory.green));
+        assertTrue("Label text is not correct",
+                connectLabel.getText().equals(LabelsFactory.connectText));
+        assertTrue("Label icon is not correct",
+                connectLabel.getIcon().equals(LabelsFactory.green));
     }
 
     /**

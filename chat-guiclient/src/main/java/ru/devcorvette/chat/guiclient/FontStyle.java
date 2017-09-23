@@ -6,13 +6,17 @@ import javax.swing.text.StyleConstants;
 import java.awt.*;
 
 /**
- * Синглтон, содержит константы стилей текста для JTextPane
+ * Синглтон, содержит константы стилей текста для JTextPane.
  */
 public class FontStyle {
     public final Style BOLD_BLACK;
     public final Style BOLD_RED;
     public final Style BOLD_BLUE;
 
+    /**
+     * Задает стили для отображения текста
+     * используя для этого JTextPane.
+     */
     private FontStyle() {
         JTextPane parent = new JTextPane();
 
@@ -23,12 +27,15 @@ public class FontStyle {
         createFontStyle();
     }
 
+    /**
+     * @return экземпляр класса
+     */
     public static FontStyle getInstance() {
         return SingletonHelper.INSTANCE;
     }
 
     /**
-     * Задает параметры для стилей текста
+     * Задает параметры для стилей текста.
      */
     private void createFontStyle() {
         StyleConstants.setBold(BOLD_BLACK, true);
@@ -36,6 +43,9 @@ public class FontStyle {
         StyleConstants.setForeground(BOLD_RED, Color.RED);
     }
 
+    /**
+     * Класс для потокобезопасного создания экземпляра класса.
+     */
     private static class SingletonHelper {
         private static final FontStyle INSTANCE = new FontStyle();
     }

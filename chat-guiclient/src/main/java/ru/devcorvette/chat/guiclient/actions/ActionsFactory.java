@@ -1,8 +1,8 @@
 package ru.devcorvette.chat.guiclient.actions;
 
-import ru.devcorvette.chat.guiclient.ChatFrame;
 import org.apache.log4j.Logger;
 import ru.devcorvette.chat.core.Client;
+import ru.devcorvette.chat.guiclient.ChatFrame;
 import ru.devcorvette.chat.guiclient.GUIClient;
 
 import javax.swing.*;
@@ -16,7 +16,7 @@ import java.util.TreeMap;
  * Инициализирует и хранит ссылки на слушателей событий Action,
  * а так же назначает на них горячие клавиши.
  */
-public class ActionsFactory {
+public final class ActionsFactory {
     public static final String ENTER = "Enter";
     public static final String SHIFT_ENTER = "Shift + Enter";
     public static final String CTRL_K = "Ctrl + K";
@@ -62,7 +62,9 @@ public class ActionsFactory {
     }
 
     /**
-     * Создает ChatKeyMap - назначает на действия горячие клавиши
+     * Создает ChatKeyMap - назначает на действия горячие клавиши.
+     *
+     * @param component компонент для получения action map
      */
     public static void createChatKeyMap(JComponent component) {
         actionMap = component.getActionMap();
@@ -76,7 +78,10 @@ public class ActionsFactory {
     }
 
     /**
-     * Назначает горячие клавиши для отправки сообщений
+     * Назначает горячие клавиши для отправки сообщений.
+     *
+     * @param key       сочентание клавишь
+     * @param component компонент для получения action map
      */
     public static void createSendMessageHotKey(String key, JComponent component) {
         ActionMap actionMap = component.getActionMap();
@@ -89,24 +94,32 @@ public class ActionsFactory {
     }
 
     /**
-     * Возвращает горячую клавишу которая отправляет сообщения или null
+     * Возвращает горячую клавишу которая отправляет сообщения или null.
+     *
+     * @param component компонент для получения action map
+     * @return сочентание клавишь
      */
     public static String getSendMessageKey(JComponent component) {
         ActionMap actionMap = component.getActionMap();
+        String result = null;
+
         if (actionMap.get(ENTER) == sendMessage) {
-            return ENTER;
-        }
-        if (actionMap.get(SHIFT_ENTER) == sendMessage) {
-            return SHIFT_ENTER;
-        }
-        if (log.isDebugEnabled()) {
+            result = ENTER;
+        } else if (actionMap.get(SHIFT_ENTER) == sendMessage) {
+            result = SHIFT_ENTER;
+        } else if (log.isDebugEnabled()) {
             log.debug("Send message key is null");
         }
-        return null;
+        return result;
     }
 
     /**
-     * Кладет в inputMap и actionMap значения горячая клавиша - действие
+     * Кладет в inputMap и actionMap значения горячая клавиша - действие.
+     *
+     * @param actionMap actionMap
+     * @param inputMap  inputMap
+     * @param key       сочентание клавишь
+     * @param action    действие
      */
     private static void putFromActionMap(
             ActionMap actionMap,
@@ -122,7 +135,9 @@ public class ActionsFactory {
 
     /**
      * Возвращает map горячая клавиша - действие.
-     * Без действия - отправить сообщение
+     * Без действия - отправить сообщение.
+     *
+     * @return map
      */
     public static Map<String, Action> getChatKeyMap() {
         if (actionMap == null) return null;
@@ -135,58 +150,124 @@ public class ActionsFactory {
         return map;
     }
 
+    /**
+     * Кладет в keyStrokeMap значения сочетания клавишь - KeyStroke.
+     *
+     * @param key       сочетание клавишь
+     * @param keyStroke keyStroke
+     */
     public static void putKeyStroke(String key, KeyStroke keyStroke) {
         keyStrokeMap.put(key, keyStroke);
     }
 
+    /**
+     * @param key сочетание клавишь
+     * @return keyStroke
+     */
     public static KeyStroke getKeyStroke(String key) {
         return keyStrokeMap.get(key);
     }
 
+    /**
+     * Создает действие - подключиться к серверу.
+     *
+     * @param frame  окно чата
+     * @param client клиент
+     * @return ConnectAction
+     */
     public static AbstractAction initConnect(ChatFrame frame, Client client) {
         return connect = new ConnectAction(client, frame, connectName);
     }
 
+    /**
+     * Создает действие - создать новый чат рум.
+     *
+     * @param client клиент
+     * @return CreateNewRoomAction
+     */
     public static AbstractAction initCreateNewRoom(Client client) {
         return createNewRoom = new CreateNewRoomAction(client, createNewRoomName);
     }
 
+    /**
+     * Создает действие - отправить сообщение.
+     *
+     * @param client клиент
+     * @return SendMessageAction
+     */
     public static AbstractAction initSendMessage(GUIClient client) {
         return sendMessage = new SendMessageAction(client, sendMessageName);
     }
 
+    /**
+     * Создает действие - показать окно настроек.
+     *
+     * @param dialog диалоговое окно
+     * @return ShowDialogAction
+     */
     public static AbstractAction initShowSettingsPane(JDialog dialog) {
         return showSettingsPane = new ShowDialogAction(dialog, showSettingsPaneName);
     }
 
+    /**
+     * Создает действие - показать менб смайликов.
+     *
+     * @param menu    меню смайликов
+     * @param invoker invoker
+     * @return ShowPopupMenuAction
+     */
     public static AbstractAction initShowSmilesMenu(JPopupMenu menu, Component invoker) {
         return showSmilesMenu = new ShowPopupMenuAction(invoker, menu, showSmilesMenuName);
     }
 
+    /**
+     * Создает действие - показать справку горячих клавишь.
+     *
+     * @param frame окно чата
+     * @return ShowKeyMap
+     */
     public static AbstractAction initShowKeyMap(ChatFrame frame) {
         return showKeyMap = new ShowKeyMap(frame, showKeyMapName);
     }
 
+    /**
+     * @return действие подклчиться к серверу
+     */
     public static AbstractAction getConnect() {
         return connect;
     }
 
+    /**
+     * @return действие создать новый чат рум
+     */
     public static AbstractAction getCreateNewRoom() {
         return createNewRoom;
     }
 
+    /**
+     * @return действие отправить сообщение
+     */
     public static AbstractAction getSendMessage() {
         return sendMessage;
     }
 
+    /**
+     * @return действие показать окно настроек
+     */
     public static AbstractAction getShowSettingsPane() {
         return showSettingsPane;
     }
 
+    /**
+     * @return действие показать меню смайликов
+     */
     public static AbstractAction getShowSmilesMenu() {
         return showSmilesMenu;
     }
 
+    /**
+     * @return действие показать справку горячих клавишь
+     */
     public static AbstractAction getShowKeyMap() {
         return showKeyMap;
     }

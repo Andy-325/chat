@@ -11,8 +11,8 @@ import java.awt.event.MouseEvent;
 import java.util.Collection;
 
 /**
- * Создает PopupMenu с иконками смайликов
- * при нажатии на смайлик в поле ввода вставляется картинка смайлика
+ * Создает PopupMenu с иконками смайликов.
+ * при нажатии на смайлик в поле ввода вставляется картинка смайлика.
  */
 public class SmilesMenu extends JPopupMenu {
     private final Collection<Style> smilesStyles = Smiles.getInstance().getSmiles();
@@ -20,13 +20,19 @@ public class SmilesMenu extends JPopupMenu {
     private final JLabel[] labels = createSmileLabels();
     private final JTextPane entryField;
 
+    /**
+     * Создает экземпляр класса.
+     *
+     * @param entryField поле ввода текста
+     */
     public SmilesMenu(JTextPane entryField) {
         this.entryField = entryField;
         initSmilesMenu();
     }
 
     /**
-     * Строит меню смайликов из лейблов. Каждому лейблу присваивается слушатель.
+     * Строит меню смайликов из лейблов.
+     * Каждому лейблу присваивается слушатель.
      */
     private void initSmilesMenu() {
         drawGrid(smiles.getSmilesNumber());
@@ -43,10 +49,12 @@ public class SmilesMenu extends JPopupMenu {
     }
 
     /**
-     * Возвращает массив лейблов. Каждому лейблу присваиваивается иконка
-     * смайлика из класса Smiles
+     * Создает массив лейблов. Каждому лейблу присваиваивается иконка
+     * смайлика из класса Smiles.
+     *
+     * @return массив лейблов
      */
-    protected JLabel[] createSmileLabels() {
+    private JLabel[] createSmileLabels() {
         ImageIcon[] icons = smiles.getSmilesIcon();
         JLabel[] labels = new JLabel[icons.length];
 
@@ -58,16 +66,18 @@ public class SmilesMenu extends JPopupMenu {
     }
 
     /**
-     * Рисует сетку в зависимости от количества смайликов (ячеек)
+     * Рисует сетку в зависимости от количества смайликов (ячеек).
+     *
+     * @param cellsNumber количество смайликов
      */
-    protected void drawGrid(int cellsNumber) {
+    private void drawGrid(int cellsNumber) {
         int x = 1;
         int y = 1;
 
         while (x * y < cellsNumber) {
-            if (y <= x)
+            if (y <= x) {
                 y++;
-            else
+            } else
                 x++;
         }
 
@@ -77,15 +87,25 @@ public class SmilesMenu extends JPopupMenu {
     /**
      * Вызывает вставку изображения в JTextPane и делает menu невидимым.
      */
-    public class InsertSmileAction extends MouseAdapter {
+    private class InsertSmileAction extends MouseAdapter {
         final JTextPane pane;
         final Style image;
 
-        public InsertSmileAction(Style image, JTextPane pane) {
+        /**
+         * @param image смайлик
+         * @param pane  тектовое поле
+         */
+        private InsertSmileAction(Style image, JTextPane pane) {
             this.image = image;
             this.pane = pane;
         }
 
+        /**
+         * Вставляет смайлик в текстовое поле, делает меню невидимым
+         * и устанавливает фокус в поле ввода.
+         *
+         * @param e mouse event
+         */
         @Override
         public void mouseClicked(MouseEvent e) {
             Smiles.insertImageInText(image, pane);
@@ -93,6 +113,11 @@ public class SmilesMenu extends JPopupMenu {
             pane.requestFocus(true);
         }
 
+        /**
+         * Вызывает mouseClicked()
+         *
+         * @param e mouse event
+         */
         @Override
         public void mouseReleased(MouseEvent e) {
             mouseClicked(e);
